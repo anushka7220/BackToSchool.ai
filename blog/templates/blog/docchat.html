@@ -1,0 +1,357 @@
+{% extends "blog/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h3 class="mb-0"><i class="fas fa-file-pdf text-primary mr-2"></i>Document Chat</h3>
+                    <p class="text-muted mb-0">Upload PDFs and get answers from their content</p>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Chat Interface -->
+                    <div id="chat-container" class="mb-4">
+                        <div id="chat-messages" class="chat-messages-container">
+                            <!-- Messages will appear here -->
+                            <div class="text-center text-muted py-4" id="empty-state">
+                                <i class="fas fa-comments fa-3x mb-3"></i>
+                                <p>Your document conversations will appear here</p>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group mt-3">
+                            <input type="text" id="user-question" class="form-control border-primary" 
+                                   placeholder="Ask something about your documents..." 
+                                   aria-label="Ask question" disabled>
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" id="ask-button" disabled>
+                                    <i class="fas fa-paper-plane"></i> Ask
+                                </button>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted" id="question-help">
+                            Please upload and process documents first
+                        </small>
+                    </div>
+                    
+                    <!-- Document Upload Section -->
+                    <div class="upload-section border-top pt-4">
+                        <h5><i class="fas fa-cloud-upload-alt text-primary mr-2"></i>Upload Documents</h5>
+                        <form id="upload-form" method="POST" enctype="multipart/form-data" class="mb-3">
+                            {% csrf_token %}
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="pdf-files" name="pdf_files" multiple accept=".pdf" required>
+                                <label class="custom-file-label" for="pdf-files">Choose PDF files</label>
+                            </div>
+                            <div class="mt-3">
+                                <button type="submit" class="btn btn-primary" id="process-button">
+                                    <i class="fas fa-cog fa-spin mr-2 d-none" id="process-spinner"></i>
+                                    Process Documents
+                                </button>
+                                <small class="form-text text-muted">Supported: PDF files with selectable text (max 10MB each)</small>
+                            </div>
+                        </form>
+                        <div id="upload-status"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Processing Modal -->
+<div class="modal fade" id="processingModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center p-4">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <h5 id="processing-text">Processing your documents...</h5>
+                <p class="text-muted mb-0" id="processing-detail">This may take a moment</p>
+                <div class="progress mt-3" id="upload-progress" style="display: none;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.chat-messages-container {
+    height: 400px;
+    overflow-y: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: #fafafa;
+    margin-bottom: 15px;
+}
+
+.message {
+    max-width: 85%;
+    word-wrap: break-word;
+    margin-bottom: 15px;
+    padding: 12px 15px;
+    border-radius: 12px;
+    animation: fadeIn 0.3s ease;
+}
+
+.user-message {
+    background-color: #e3f2fd;
+    margin-left: auto;
+    border-bottom-right-radius: 0;
+}
+
+.assistant-message {
+    background-color: #f1f1f1;
+    margin-right: auto;
+    border-bottom-left-radius: 0;
+}
+
+.message-header {
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.message-body {
+    white-space: pre-wrap;
+    line-height: 1.6;
+}
+
+#empty-state {
+    opacity: 0.6;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scrollbar styling */
+.chat-messages-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.chat-messages-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.chat-messages-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* File input styling */
+.custom-file-input:lang(en)::after {
+    content: "Browse";
+}
+
+.custom-file-label::after {
+    content: "Browse";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.375rem 0.75rem;
+    color: #fff;
+    background-color: #007bff;
+    border-left: inherit;
+    border-radius: 0 0.25rem 0.25rem 0;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Initialize variables
+    let documentsProcessed = false;
+    
+    // Handle file input label
+    $('.custom-file-input').on('change', function() {
+        let files = $(this)[0].files;
+        let label = files.length > 1 ? 
+            `${files.length} files selected` : 
+            (files.length === 1 ? files[0].name : 'Choose PDF files');
+        $(this).next('.custom-file-label').text(label);
+        
+        // Validate file sizes
+        let valid = true;
+        $.each(files, function(i, file) {
+            if (file.size > 10 * 1024 * 1024) { // 10MB limit
+                showAlert(`File '${file.name}' is too large (max 10MB)`, 'danger');
+                valid = false;
+                return false;
+            }
+            if (file.type !== 'application/pdf') {
+                showAlert(`File '${file.name}' is not a PDF`, 'danger');
+                valid = false;
+                return false;
+            }
+        });
+        
+        if (!valid) {
+            $(this).val(''); // Clear the input
+            $(this).next('.custom-file-label').text('Choose PDF files');
+        }
+    });
+
+    // Handle document upload and processing
+    $('#upload-form').on('submit', function(e) {
+        e.preventDefault();
+        
+        let files = $('#pdf-files')[0].files;
+        if (files.length === 0) {
+            showAlert('Please select at least one PDF file', 'danger');
+            return;
+        }
+        
+        $('#process-spinner').removeClass('d-none');
+        $('#process-button').prop('disabled', true);
+        $('#processing-text').text('Processing your documents...');
+        $('#processing-detail').text('This may take a few moments depending on file size');
+        $('#upload-progress').show();
+        $('#processingModal').modal('show');
+        
+        let formData = new FormData(this);
+        
+        $.ajax({
+            url: "{% url 'process-documents' %}",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            xhr: function() {
+                let xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener('progress', function(e) {
+                    if (e.lengthComputable) {
+                        let percentComplete = Math.round((e.loaded / e.total) * 100);
+                        $('#upload-progress .progress-bar').css('width', percentComplete + '%');
+                    }
+                }, false);
+                return xhr;
+            },
+            success: function(response) {
+                documentsProcessed = true;
+                $('#user-question').prop('disabled', false);
+                $('#ask-button').prop('disabled', false);
+                $('#question-help').text('');
+                showAlert(`Success! Processed ${response.chunk_count || '?'} text chunks`, 'success');
+                
+                // Store the session ID for future questions
+                currentSessionId = response.session_id || 'default';
+            },
+            error: function(xhr) {
+                let errorMsg = xhr.responseJSON?.error || 'An error occurred while processing';
+                showAlert(errorMsg, 'danger');
+            },
+            complete: function() {
+                $('#process-spinner').addClass('d-none');
+                $('#process-button').prop('disabled', false);
+                $('#processingModal').modal('hide');
+                $('#upload-progress').hide();
+                $('#upload-progress .progress-bar').css('width', '0%');
+            }
+        });
+    });
+
+    // Handle asking questions
+    $('#ask-button').on('click', function() {
+        let question = $('#user-question').val().trim();
+        if (!question) return;
+        
+        $('#empty-state').hide();
+        addMessage('user', question);
+        $('#user-question').val('');
+        $('#user-question').prop('disabled', true);
+        $('#ask-button').prop('disabled', true);
+        
+        $('#processing-text').text('Generating answer...');
+        $('#processing-detail').text('Analyzing document content');
+        $('#processingModal').modal('show');
+        
+        $.ajax({
+            url: "{% url 'ask-question' %}",
+            type: 'POST',
+            data: {
+                'question': question,
+                'session_id': currentSessionId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                addMessage('assistant', response.answer);
+            },
+            error: function(xhr) {
+                let errorMsg = xhr.responseJSON?.error || 'Failed to get answer';
+                addMessage('assistant', `Error: ${errorMsg}`);
+            },
+            complete: function() {
+                $('#user-question').prop('disabled', false);
+                $('#ask-button').prop('disabled', false);
+                $('#processingModal').modal('hide');
+                $('#user-question').focus();
+            }
+        });
+    });
+
+    // Enter key submission
+    $('#user-question').on('keypress', function(e) {
+        if (e.which === 13 && !e.shiftKey) {
+            e.preventDefault();
+            $('#ask-button').click();
+        }
+    });
+
+    // Helper functions
+    function addMessage(sender, text) {
+        let messageClass = sender === 'user' ? 'user-message' : 'assistant-message';
+        let icon = sender === 'user' ? 'fa-user' : 'fa-robot';
+        let senderName = sender === 'user' ? 'You' : 'AI Assistant';
+        
+        let messageHtml = `
+            <div class="message ${messageClass}">
+                <div class="message-header">
+                    <i class="fas ${icon} mr-2"></i>${senderName}
+                </div>
+                <div class="message-body">
+                    ${text}
+                </div>
+            </div>
+        `;
+        
+        $('#chat-messages').append(messageHtml);
+        $('#chat-messages').scrollTop($('#chat-messages')[0].scrollHeight);
+    }
+    
+    function showAlert(message, type) {
+        let alertHtml = `
+            <div class="alert alert-${type} alert-dismissible fade show">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2"></i>
+                ${message}
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+            </div>
+        `;
+        $('#upload-status').html(alertHtml);
+    }
+});
+</script>
+{% endblock %}

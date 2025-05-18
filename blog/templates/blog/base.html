@@ -1,0 +1,863 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
+
+    {% if title %}
+        <title>BackToSchool.AI - {{ title }}</title>
+    {% else %}
+        <title>BackToSchool.AI - Smart Learning Blog</title>
+    {% endif %}
+
+    
+    <style>
+        :root {
+            --primary-dark: #121212;
+            --secondary-dark: #1e1e1e;
+            --accent-dark: #2a2a2a;
+            --text-primary: #f0f0f0;
+            --text-secondary: #b0b0b0;
+            --pastel-blue: #89CFF0;
+            --pastel-green: #98FB98;
+            --pastel-pink:rgb(242, 158, 177);
+            --pastel-purple: #C3B1E1;
+            --pastel-yellow:rgb(251, 248, 98);
+            --pastel-orange: #FFB347;
+            --brand-gradient: linear-gradient(135deg, #FF9A8B 0%, #FF6B95 50%, #8B5CF6 100%);
+            --welcome-gradient: linear-gradient(135deg, var(--pastel-purple) 0%, var(--pastel-pink) 50%, var(--pastel-green) 100%);
+        }
+        
+        body {
+          background-color: var(--primary-dark);
+          background-image: 
+            linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+          background-size: 24px 24px;
+          background-position: -1px -1px;
+          animation: gridMove 4s linear infinite;
+        }
+        
+        @keyframes gridMove {
+          0% { background-position: 0 0; }
+          100% { background-position: 24px 24px; }
+        }
+        
+        .site-header {
+            background-color: var(--secondary-dark);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.8rem;
+            letter-spacing: -0.5px;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding: 5px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-brand:hover {
+            transform: scale(1.02);
+            text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+        }
+        
+        .nav-link {
+            color: var(--text-primary) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+            border-radius: 8px;
+            padding: 8px 15px !important;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--pastel-blue);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        /* Pastel buttons */
+        .btn-pastel-blue {
+            background-color: var(--pastel-blue);
+            color: #1a3a4a;
+            border: none;
+        }
+        
+        .btn-pastel-green {
+            background-color: var(--pastel-green);
+            color: #1a4a2a;
+            border: none;
+        }
+        
+        .btn-pastel-pink {
+            background-color: var(--pastel-green);
+            color: #4a1a2f;
+            border: none;
+        }
+        
+        .btn-pastel-purple {
+            background-color: var(--pastel-blue);
+            color: #3a1a5a;
+            border: none;
+        }
+        
+        .btn-pastel-yellow {
+            background-color: var(--pastel-yellow);
+            color: #5a4a1a;
+            border: none;
+        }
+        
+        .btn-pastel-orange {
+            background-color: var(--pastel-orange);
+            color: #5a3a1a;
+            border: none;
+        }
+        
+        /* Enhanced button hover effects */
+        [class^="btn-pastel-"] {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        [class^="btn-pastel-"]:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        [class^="btn-pastel-"]::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0));
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -1;
+        }
+        
+        [class^="btn-pastel-"]:hover::before {
+            opacity: 1;
+        }
+        
+        .content-section {
+            background-color: var(--secondary-dark);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 25px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+        }
+        
+        .content-section:hover {
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.21);
+            transform: translateY(-5px);
+        }
+        
+        .content-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                600px circle at var(--mouse-x) var(--mouse-y), 
+                rgba(255, 255, 255, 0.45), 
+                transparent 40%
+            );
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 0;
+        }
+        
+        .content-section:hover::before {
+            opacity: 1;
+        }
+        
+        .content-section::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.05) 0%,
+                rgba(255, 255, 255, 0.01) 100%
+            );
+            z-index: -1;
+            border-radius: inherit;
+        }
+        
+        .list-group-item {
+            background-color: var(--accent-dark);
+            color: var(--text-primary);
+            border: none;
+            border-left: 3px solid var(--pastel-blue);
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .list-group-item:hover {
+            transform: translateX(5px);
+            border-left-width: 5px;
+            margin-left: -2px;
+            background-color: rgba(137, 207, 240, 0.1);
+        }
+        
+        .list-group-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                        rgba(137, 207, 240, 0.1), 
+                        rgba(137, 207, 240, 0.05));
+            transition: width 0.3s ease;
+            z-index: -1;
+        }
+        
+        .list-group-item:hover::before {
+            width: 100%;
+        }
+        
+        .alert {
+            border-radius: 8px;
+            border: none;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .alert:hover {
+            transform: scale(1.01);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .article-title {
+            color: var(--text-primary);
+            transition: color 0.3s ease;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .article-title:hover {
+            color: var(--pastel-blue);
+        }
+        
+        .article-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--pastel-blue);
+            transition: width 0.3s ease;
+        }
+        
+        .article-title:hover::after {
+            width: 100%;
+        }
+        
+        .article-content {
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+        
+        .article-metadata {
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        footer {
+            background-color: var(--secondary-dark);
+            color: var(--text-secondary);
+            padding: 30px 0;
+            margin-top: 50px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        footer:hover {
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
+        }
+        
+        .profile-btn {
+            display: flex;
+            align-items: center;
+            padding: 5px 15px !important;
+            transition: all 0.3s ease;
+        }
+        
+        .profile-pic {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background: var(--brand-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+        
+        .profile-btn:hover .profile-pic {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+                  
+        /* Enhanced Welcome Banner */
+        .welcome-banner {
+            --gradient-purple: rgba(178, 109, 243, 0.9);
+            --gradient-pink: rgba(238, 155, 180, 0.9);
+            --gradient-green: rgba(155, 242, 220, 0.9);
+            --gradient-yellow: rgba(250, 248, 132, 0.9);
+            
+            background: linear-gradient(-45deg, 
+                        var(--gradient-purple), 
+                        var(--gradient-pink), 
+                        var(--gradient-green),
+                        var(--gradient-yellow));
+            background-size: 300% 300%;
+            color: #121212;
+            padding: 20px 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 
+                0 4px 20px rgba(0,0,0,0.15),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+            animation: gradientBG 12s ease infinite;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .welcome-banner:hover {
+            transform: scale(1.01);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to right, 
+                        rgba(255,255,255,0.1) 0%, 
+                        rgba(255,255,255,0) 50%, 
+                        rgba(255,255,255,0.1) 100%);
+            mix-blend-mode: overlay;
+            pointer-events: none;
+        }
+        
+        .welcome-content {
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .welcome-icon {
+            font-size: 2rem;
+            margin-right: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .welcome-title {
+            color: #121212;
+            margin: 0 0 5px 0;
+            font-weight: 800;
+            font-size: 1.4rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .welcome-subtext {
+            color: rgba(30,30,30,0.9);
+            margin: 0;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* AI Tools Section Styles */
+        .ai-tool-card {
+            background-color: var(--accent-dark);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ai-tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border-left-color: var(--pastel-blue);
+        }
+        
+        .ai-tool-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+            z-index: 0;
+        }
+        
+        .ai-tool-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .ai-tool-card:hover .ai-tool-icon {
+            transform: scale(1.1);
+        }
+        
+        .docchat-icon { color: var(--pastel-blue); }
+        .notes-icon { color: var(--pastel-green); }
+        .flashcard-icon { color: var(--pastel-purple); }
+        .homework-icon { color: var(--pastel-pink); }
+        .tutor-icon { color: var(--pastel-yellow); }
+        .planner-icon { color: var(--pastel-orange); }
+        
+        .ai-tool-title {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .ai-tool-card:hover .ai-tool-title {
+            color: var(--pastel-blue);
+        }
+        
+        .ai-tool-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .ai-tool-btn {
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .ai-tool-card:hover .ai-tool-btn {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+            .nav-link {
+                margin: 5px 0;
+            }
+        }
+        /* Form Controls - Fixed */
+          input[type="text"],
+          input[type="email"],
+          input[type="password"],
+          input[type="number"],
+          textarea,
+          select,
+          .form-control {
+              background-color: var(--secondary-dark) !important;
+              color: var(--text-primary) !important;
+              border: 1px solid rgba(255,255,255,0.12);
+              position: relative;
+              z-index: 10;
+              padding: 10px;
+              border-radius: 6px;
+          }
+
+          /* Placeholders */
+          input[type="text"]::placeholder,
+          input[type="email"]::placeholder,
+          input[type="password"]::placeholder,
+          input[type="number"]::placeholder,
+          textarea::placeholder {
+              color: var(--text-secondary) !important;
+              opacity: 0.7;
+          }
+
+          /* Focus states */
+          input[type="text"]:focus,
+          input[type="email"]:focus,
+          input[type="password"]:focus,
+          input[type="number"]:focus,
+          textarea:focus,
+          select:focus,
+          .form-control:focus {
+              outline: none;
+              border-color: var(--pastel-blue);
+              box-shadow: 0 0 0 2px rgba(137, 207, 240, 0.25);
+          }
+
+          /* Labels */
+          label {
+              color: var(--text-primary);
+              font-weight: 500;
+              margin-bottom: 8px;
+          }
+
+          /* Fix for form elements inside content-section */
+          .content-section form {
+              position: relative;
+              z-index: 20;
+          }
+
+          /* Fix for crispy forms */
+          .form-group {
+              margin-bottom: 20px;
+          }
+
+          .form-control {
+              width: 100%;
+          }
+
+          /* Better contrast for Django's help text */
+          .help-block, .help-text, small.form-text {
+              color: var(--text-secondary) !important;
+          }
+
+          /* Submit buttons */
+          button[type="submit"] {
+              position: relative;
+              z-index: 10;
+          }
+          /* Ensure action buttons are clickable in post detail */
+          .article-metadata > div {
+              position: relative;
+              z-index: 30;
+          }
+       
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top">
+          <div class="container">
+            <a class="navbar-brand mr-4" href="{% url 'blog-home' %}">
+                <i class="fas fa-robot mr-2"></i>BackToSchool.AI
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarToggle">
+              <div class="navbar-nav mr-auto">
+                <a class="nav-item nav-link" href="{% url 'blog-home' %}"><i class="fas fa-home mr-1"></i> Home</a>
+                <a class="nav-item nav-link" href="{% url 'ai-tools' %}"><i class="fas fa-robot mr-1"></i> AI Tools</a>
+                <a class="nav-item nav-link" href="{% url 'blog-about' %}"><i class="fas fa-info-circle mr-1"></i> About</a>
+              </div>
+              <!-- Navbar Right Side -->
+                <div class="navbar-nav">
+                {% if user.is_authenticated %}
+                  <a class="nav-item nav-link btn-pastel-purple" href="{% url 'post-create' %}"><i class="fas fa-plus-circle mr-1"></i> New Post</a>
+                  <a class="nav-item nav-link profile-btn btn-pastel-pink" href="{% url 'profile' %}">
+                    <div class="profile-pic">{{ user.username|first|upper }}</div>
+                    {{ user.username }}
+                  </a>
+                  <a class="nav-item nav-link btn-pastel-yellow" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt mr-1"></i></a>
+                {% else %}
+                  <a class="nav-item nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt mr-1"></i> Login</a>
+                  <a class="nav-item nav-link" href="{% url 'register' %}"><i class="fas fa-user-plus mr-1"></i> Register</a>
+                {% endif %}
+                </div>
+            </div>
+          </div>
+        </nav>
+      </header>
+
+      <main role="main" class="container mt-5 pt-4">
+        <div class="row">
+          <div class="col-md-8">
+            {% if user.is_authenticated %}
+            <div class="welcome-banner">
+              <div class="welcome-content">
+                <div class="welcome-icon">👋</div>
+                <div>
+                  <h3 class="welcome-title">Hi {{ user.username }}, welcome back!</h3>
+                  <p class="welcome-subtext">Explore our latest AI tools and resources to enhance your learning experience.</p>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+            
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                  {{ message }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              {% endfor %}
+            {% endif %}
+            
+            {% block content %}{% endblock %}
+            
+            <!-- AI Tools Section -->
+            {% if request.path == '/ai-tools/' %}
+            <div class="content-section">
+              <h2 class="mb-4"><i class="fas fa-robot mr-2"></i> AI-Powered Learning Tools</h2>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="ai-tool-card">
+                    <div class="ai-tool-icon docchat-icon">
+                      <i class="fas fa-comments"></i>
+                    </div>
+                    <h4 class="ai-tool-title">DocChat</h4>
+                    <p class="ai-tool-desc">Chat with your documents and get instant answers to your questions. Upload PDFs, Word docs, and more.</p>
+                    <a href="#" class="btn btn-pastel-blue ai-tool-btn">Try DocChat</a>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="ai-tool-card">
+                    <div class="ai-tool-icon notes-icon">
+                      <i class="fas fa-sticky-note"></i>
+                    </div>
+                    <h4 class="ai-tool-title">Smart Notes</h4>
+                    <p class="ai-tool-desc">Transform your messy notes into organized, summarized content with AI-powered note taking.</p>
+                    <a href="#" class="btn btn-pastel-green ai-tool-btn">Create Notes</a>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="ai-tool-card">
+                    <div class="ai-tool-icon flashcard-icon">
+                      <i class="fas fa-layer-group"></i>
+                    </div>
+                    <h4 class="ai-tool-title">Flashcard Generator</h4>
+                    <p class="ai-tool-desc">Automatically generate flashcards from your notes or textbooks for efficient studying.</p>
+                    <a href="#" class="btn btn-pastel-purple ai-tool-btn">Make Flashcards</a>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="ai-tool-card">
+                    <div class="ai-tool-icon homework-icon">
+                      <i class="fas fa-book-open"></i>
+                    </div>
+                    <h4 class="ai-tool-title">Homework Helper</h4>
+                    <p class="ai-tool-desc">Get step-by-step explanations for math, science, and other homework problems.</p>
+                    <a href="#" class="btn btn-pastel-pink ai-tool-btn">Get Help</a>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="ai-tool-card">
+                    <div class="ai-tool-icon tutor-icon">
+                      <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <h4 class="ai-tool-title">AI Tutor</h4>
+                    <p class="ai-tool-desc">Personalized 1-on-1 tutoring in any subject, available 24/7 to answer your questions.</p>
+                    <a href="#" class="btn btn-pastel-yellow ai-tool-btn">Start Learning</a>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="ai-tool-card">
+                    <div class="ai-tool-icon planner-icon">
+                      <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h4 class="ai-tool-title">Study Planner</h4>
+                    <p class="ai-tool-desc">Create personalized study schedules based on your syllabus and upcoming exams.</p>
+                    <a href="#" class="btn btn-pastel-orange ai-tool-btn">Plan Studies</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+          <div class="col-md-4">
+            <div class="content-section">
+              <h3 class="mb-4"><i class="fas fa-compass mr-2" style="color: var(--pastel-blue);"></i> Explore</h3>
+              <p class='text-muted'>Discover our AI-powered learning tools.
+                <ul class="list-group mt-3">
+                  <li class="list-group-item"><i class="fas fa-newspaper mr-2"></i> Latest Posts</li>
+                  <li class="list-group-item"><i class="fas fa-bullhorn mr-2"></i> Announcements</li>
+                  <li class="list-group-item"><i class="fas fa-calendar-alt mr-2"></i> Study Planner</li>
+                  <li class="list-group-item"><i class="fas fa-graduation-cap mr-2"></i> AI Tutor</li>
+                </ul>
+              </p>
+            </div>
+            
+            <div class="content-section">
+              <h4 class="mb-3"><i class="fas fa-bolt mr-2" style="color: var(--pastel-blue);"></i> Quick Links</h4>
+              <div class="d-flex flex-wrap">
+                <a href="#" class="btn btn-sm btn-pastel-blue m-1">Math AI</a>
+                <a href="#" class="btn btn-sm btn-pastel-green m-1">Science</a>
+                <a href="#" class="btn btn-sm btn-pastel-pink m-1">Essay</a>
+                <a href="#" class="btn btn-sm btn-pastel-purple m-1">Flashcards</a>
+                <a href="#" class="btn btn-sm btn-pastel-yellow m-1">Homework</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      
+      <footer class="text-center">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-4 mb-3 mb-md-0">
+              <h5>BackToSchool.AI</h5>
+              <p>AI-powered learning platform for students.</p>
+            </div>
+            <div class="col-md-4 mb-3 mb-md-0">
+              <h5>Resources</h5>
+              <ul class="list-unstyled">
+                <li><a href="#" class="text-secondary">Blog</a></li>
+                <li><a href="#" class="text-secondary">Tutorials</a></li>
+                <li><a href="#" class="text-secondary">Help Center</a></li>
+              </ul>
+            </div>
+            <div class="col-md-4">
+              <h5>Connect</h5>
+              <a href="#" class="text-secondary mx-2"><i class="fab fa-twitter fa-lg"></i></a>
+              <a href="#" class="text-secondary mx-2"><i class="fab fa-instagram fa-lg"></i></a>
+              <a href="#" class="text-secondary mx-2"><i class="fab fa-github fa-lg"></i></a>
+            </div>
+          </div>
+          <hr class="my-3 bg-secondary">
+          <p class="mb-0 text-secondary">&copy; 2023 BackToSchool.AI - All rights reserved.</p>
+        </div>
+      </footer>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script>
+      // Smooth scroll for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+          anchor.addEventListener('click', function (e) {
+              e.preventDefault();
+              document.querySelector(this.getAttribute('href')).scrollIntoView({
+                  behavior: 'smooth'
+              });
+          });
+      });
+      
+      // Dynamic header shadow
+      window.addEventListener('scroll', function() {
+          const header = document.querySelector('.site-header');
+          header.style.boxShadow = window.scrollY > 10 
+              ? '0 4px 20px rgba(0, 0, 0, 0.4)'
+              : '0 2px 15px rgba(0, 0, 0, 0.3)';
+      });
+      
+      // Mouse position tracking for content sections
+      document.querySelectorAll('.content-section').forEach(section => {
+          section.addEventListener('mousemove', (e) => {
+              const rect = section.getBoundingClientRect();
+              section.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+              section.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+          });
+      });
+      
+      // Add ripple effect to buttons
+      document.querySelectorAll('[class^="btn-pastel-"]').forEach(button => {
+          button.addEventListener('click', function(e) {
+              const x = e.pageX - e.target.offsetLeft;
+              const y = e.pageY - e.target.offsetTop;
+              
+              const ripple = document.createElement('span');
+              ripple.style.left = x + 'px';
+              ripple.style.top = y + 'px';
+              ripple.classList.add('ripple-effect');
+              
+              this.appendChild(ripple);
+              
+              setTimeout(() => {
+                  ripple.remove();
+              }, 1000);
+          });
+      });
+    </script>
+</body>
+</html>

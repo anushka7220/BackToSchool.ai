@@ -7,12 +7,30 @@ Whether you're a school student, college learner, or working professional, BackT
 Because going back to school should be a leap forward.
 <img width="1438" alt="Screenshot 2025-05-19 at 1 59 25 AM" src="https://github.com/user-attachments/assets/219e3e15-89ee-48c7-8845-ba31b9ea4d31" />
 
-✨ What We Offer:
+✨ What We Offer
+📄 DocChat
+Your personalized multi-document assistant. Upload textbooks, PDFs, notes, and ask questions like you're chatting with your study material—context-aware and instant.
 
-📄 DocChat – Your personalized multi-document assistant. Upload textbooks, PDFs, notes, and ask anything! It’s like chatting with your study material—context-aware and instant.
-📝 Smart Notes – No more scrambling through your revision list. Create custom LeetCode problem trackers, add personal insights, and build a focused prep plan that evolves with you.
-🤖 Your Personal AI – From clearing doubts to generating summaries, our built-in AI assistant is always at your service—tailored to your learning style.
-🧠 Flashcards Maker – Convert your notes or topics into flashcards automatically. Ace memorization with our smart, spaced-repetition-based system.
-🎯 And Much More... – Explore tools designed to boost productivity, track progress, and make learning fun and efficient.
+📝 Smart Notes
+Say goodbye to scattered revision! Create custom LeetCode trackers, add personal notes, and build a focused study plan that evolves with your progress.
+
+🤖 Your Personal AI
+From doubt-solving to content summarization, your custom AI assistant adapts to your needs and supports your unique learning journey.
+
+🧠 Flashcards Maker
+Turn your notes or learning content into smart flashcards automatically. Practice with spaced repetition to reinforce long-term memory.
+
+🎯 And Much More...
+Explore features that enhance learning, boost productivity, and track progress:
+
+Personalized study plans
+
+Goal setting and performance insights
+
+AI-based content generation
+
+Resource recommendations
+
+
 
 <img width="1438" alt="Screenshot 2025-05-19 at 1 59 42 AM" src="https://github.com/user-attachments/assets/42c3c03f-ca51-4a6c-9b4e-f4acdb2d3670" />
